@@ -137,9 +137,9 @@ export default {
 </script>
 <style>
 .is-error{
-    color: #A50303 !important;
+    color: #FF0000 !important;
 }
 .is-success{
-    color: green !important;
+    color: #32CD32 !important;
 }
 </style>

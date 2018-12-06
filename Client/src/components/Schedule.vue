@@ -10,25 +10,27 @@
       </div>
       <!-- course details -->
       <div class="column is-full">
-        <div class="is-pulled-left column is-4" style="text-align:left;">
-          <a class="button is-small" style="border:1px solid #FF0000; width:10%"></a>
+        <div class="is-pulled-left column is-5" style="text-align:left;">
+          <a class="button is-small" style="border:1px solid #FF0000; width:5%"></a>
           <span>Availability not provided</span> &nbsp;&nbsp;
-          <a class="button is-small" style="border:1px solid #32CD32; width:10%"></a>
+          <a class="button is-small" style="border:1px solid #32CD32; width:5%"></a>
           <span>Availability provided</span>
+          <a class="button is-small" style="background:rgb(6, 188, 243); width:5%"></a>
+          <span>Course Slots</span>
         </div>
         <div class="is-pulled-left column is-4" style="text-align:left;" v-if="showConstraintsLegend">
-          <a class="button is-small" style="background:#ff9f89; width:10%"></a>
+          <a class="button is-small" style="background:#ff9f89; width:5%"></a>
           <span>Hard Constraints</span> &nbsp;&nbsp;
-          <a class="button is-small" style="background:#FFFF00; width:10%"></a>
+          <a class="button is-small" style="background:#FFFF00; width:5%"></a>
           <span>Soft Constraints</span>
         </div>  
-        <p class="label is-pulled-right" style="text-align:left;">
+        <p class="label is-pulled-right" style="text-align:right;">
           Course : {{courseData['course_name']}} - {{courseData['course_number']}} <br>
           Semester : {{courseData['course_semester']}} <br>
           <span class="has-text-weight-bold"> Instructors : {{instructorNames(instructorData)}}</span>
         </p>
       </div>
-      <div class="columns" >
+      <div class="columns">
         <div class="column is-one-fourth" style="margin-top:30px; position:relative;">
           <div class="columns is-multiline" id="ta">
             <div class="column is-full">
@@ -815,7 +817,7 @@
             eventObj["end"] = rule.end;
             eventObj["rendering"] = "background";
             eventObj["courseSlot"] = true; 
-            eventObj["backgroundColor"] = "#B5F9F4";
+            eventObj["backgroundColor"] = "rgb(6, 188, 243)";
             eventObj["key"] = index;
             //eventObj["borderColor"] = rule.color;
             //eventObj["className"] = ['slotEvent'];
@@ -890,7 +892,7 @@
     word-wrap: break-word;
 }
 .is-error{
-    color: #A50303 !important;
+    color: #FF0000 !important;
 }
 .slotEvent{
   background: none !important;

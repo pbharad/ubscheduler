@@ -298,7 +298,7 @@ p.subtitle {
   padding-top: 1rem;
 }
 .is-error{
-    color: #A50303 !important;
+    color: #FF0000 !important;
 }
 
 </style>

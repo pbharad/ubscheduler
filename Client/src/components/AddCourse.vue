@@ -107,7 +107,8 @@
                   <v-icon name="plus-circle"></v-icon>
                 </span>
                 <span>Add slot</span>
-          </p>
+            </p>
+            <p v-if="action === 'add'" class="label">Note: All TAs added here will be sent out an email with a link to the Questionnaire</p>
           </div>
         </div>
       </div>
@@ -536,10 +537,11 @@ export default{
       var self = this;
       var validate = this.validateCourse();
       if(validate.error){
+        self.displayNotification('Check errors below', false);
         this[validate.data] = true;
         setTimeout(function(){
           self[validate.data] = false;
-        }, 3000);
+        }, 5000);
       }
       else{
         var finalObj = {};
@@ -595,7 +597,7 @@ export default{
             console.log("brad");
             console.log(self.courseID);
             if(self.action === 'add'){
-              self.displayNotification("Course added successfully", true);
+              self.displayNotification("Course added successfully. Email has been sent to the TAs added", true);
             }else{
               self.displayNotification("Course updated successfully", true);
             }
@@ -615,7 +617,7 @@ export default{
 </script>
 <style>
 .is-error{
-    color: #A50303 !important;
+    color: #FF0000 !important;
 }
 .multiselect.invalid .multiselect__tags,  
 .multiselect.invalid .multiselect__tags span,
