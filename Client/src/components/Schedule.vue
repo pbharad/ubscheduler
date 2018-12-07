@@ -37,9 +37,9 @@
               <label class="label">Drag and Drop TAs to generate your schedule</label>
             </div>
           </div>
-          <div class="column is-full">
+          <!-- <div class="column is-full">
             <a class="button is-info" @click="clearData">Clear Data </a>
-          </div>
+          </div> -->
         </div>
         <div class="column is-6">
           <full-calendar :config="config"
@@ -70,7 +70,7 @@
                           <label class="label"> {{index}} </label>
                         </div>
                         <div class="column is-full" v-for="(time, ind) in data" :key="ind">
-                          <a class="button">{{time.sec_id}} - {{time.start}} to {{time.end}} </a>
+                          <a class="button" @click="highlight(time)">{{time.sec_id}} - {{time.start}} to {{time.end}} </a>
                         </div>
                       </div>
                       <div class="columns is-multiline is-full" v-if="!isCourseSlotAvailable()">
@@ -308,6 +308,25 @@
     },
 
     methods:{
+      highlight(data){
+        var events = $('#calendar').fullCalendar('clientEvents');
+          events.forEach(function(event){
+          if(event.rendering === 'background' && event.key !== undefined && event.key !== null){
+            console.log("Data");
+            console.log(event._id);
+            if(event.key === data.key){
+              if(data.toggle === null || data.toggle === undefined || data.toggle === false){
+               data["toggle"] = true;
+               event.backgroundColor = '#000000'; 
+              }else{
+                data["toggle"] = false;
+                event.backgroundColor = 'rgb(6, 188, 243)';
+              }
+              $('#calendar').fullCalendar('updateEvent',event);
+            }
+          }
+        });
+      },
       collapse(){
         this.showSlots = !this.showSlots;
       },
@@ -594,15 +613,16 @@
         var self = this;
         this.taDetails.forEach(function(data){
           var name = data.ta_name.replace(/\s+/g, '');
+          var key = data.ta_email.split('@')[0].replace(/[^\w\s]/gi, '');
           var text = '';
           var tooltipText = data.ta_name + ' - ' + data.ta_type;
           if(data.availability === null){
-            text = '<div class="column is-half"><a id="'+name+'" class="button wrapText is-fullwidth" style="border:1px solid #FF0000; height:100%">'+tooltipText+'</a></div>';
+            text = '<div class="column is-half"><a id="'+key+'" class="button wrapText is-fullwidth" style="border:1px solid #FF0000; height:100%">'+tooltipText+'</a></div>';
           }else{
-            text = '<div class="column is-half"><a id="'+name+'" data-badge="'+data.availability.max_hours+'" class="button badge wrapText is-fullwidth" style="border:1px solid #32CD32; height:100%">'+tooltipText+'</a></div>';
+            text = '<div class="column is-half"><a id="'+key+'" data-badge="'+data.availability.max_hours+'" class="button badge wrapText is-fullwidth" style="border:1px solid #32CD32; height:100%">'+tooltipText+'</a></div>';
           }
           $('#ta').append(text);
-          $('#'+name).data('details',data);
+          $('#'+key).data('details',data);
         });
 
         $('#ta .button').each(function() {
@@ -892,7 +912,7 @@
     word-wrap: break-word;
 }
 .is-error{
-    color: #FF0000 !important;
+    color: #A50303 !important;
 }
 .slotEvent{
   background: none !important;
