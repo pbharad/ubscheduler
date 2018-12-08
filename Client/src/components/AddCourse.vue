@@ -108,7 +108,6 @@
                 </span>
                 <span>Add slot</span>
             </p>
-            <p v-if="action === 'add'" class="label">Note: All TAs added here will be sent out an email with a link to the Questionnaire</p>
           </div>
         </div>
       </div>
@@ -141,6 +140,7 @@
                 </span>
                 <span>Add TA</span>
           </p>
+          <p class="label">Note: All TAs added here will be sent out an email with a link to the Questionnaire</p>
       </div>
     </div>
     <modal v-if="showImportModal" v-on:close="closeModal">
