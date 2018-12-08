@@ -11,8 +11,6 @@ let clientDomain = require('../config/client_domain');
 module.exports = {
     async setSchedule(req,res){
         try{
-            //${JSON.stringify(req.body.schedule)}
-            /*let sql = `CALL set_course_schedule(${req.params.courseid},'${JSON.stringify(req.body.schedule)}','${JSON.stringify(req.body.violations)}')`;*/
             let sql = `CALL set_course_schedule(${req.params.courseid},?,?)`;
             let query = await db.query(sql,[JSON.stringify(req.body.schedule),JSON.stringify(req.body.violations)]);
             res.send(resformat.res_format(false,'OK',req.body.schedule));
@@ -75,21 +73,6 @@ module.exports = {
 
           // format of course rules
           let courseRules = result[0][0]['course_rules'];
-          /*let dict = {};
-          courseRules.forEach((obj)=>{
-              let start = moment(obj['start']);
-              let end = moment(obj['end']);
-              let key = start.format('HH:mm')+'#'+end.format('HH:mm');
-              let bindObject = {};
-              bindObject['start'] = start.format('HH:mm');
-              bindObject['end'] = end.format('HH:mm');
-              bindObject['dates'] = [];
-              if(key in dict)
-                  bindObject = dict[key];
-
-              bindObject['dates'].push(start.format('YYYY-MM-DD'));
-              dict[key] = bindObject;
-          });*/
           let updatedRules = [];
           courseRules.forEach((obj)=>{
               let start = moment(obj['start']);
@@ -125,13 +108,6 @@ module.exports = {
     async addEditCourseInfo(req,res){
         try{
             let reqBody = req.body;
-
-            // update course details
-            /*let courseSql = `call set_course_details(${reqBody.courseDetails.course_id},
-            '${reqBody.courseDetails.course_number}','${reqBody.courseDetails.course_semester}',
-            '${JSON.stringify(reqBody.courseDetails.course_rules)}','${reqBody.courseDetails.course_name}'
-            ,'${reqBody.courseDetails.course_desc}')`;*/
-
             let courseSql = `call set_course_details(${reqBody.courseDetails.course_id},?,?,?,?,?)`;
 
             let courseResult = await db.query(courseSql,[reqBody.courseDetails.course_number,
@@ -186,7 +162,6 @@ module.exports = {
             let newTA = taAdd.map((obj)=>{
                 return obj.ta_email;
             });
-            //newTA.push('adityasu@buffalo.edu');
             newTA = newTA.filter((mailId)=>{
                if(!allTA.includes(mailId))
                    return mailId;
@@ -210,10 +185,6 @@ module.exports = {
                         console.log('mail send success');
                 })
             });
-
-            /*console.log(newTA);
-            console.log(allTA);*/
-
             taAdd.forEach(async (ta)=>{
                 /*let addTaSql = `call set_ta_details(${courseid},'${(ta.ta_email).toLowerCase()}','${ta.ta_name}','${ta.ta_type}','${JSON.stringify(ta.rules)}')`;*/
                 let addTaSql = `call set_ta_details(${courseid},?,?,'${ta.ta_type}',?)`;
@@ -357,20 +328,12 @@ module.exports = {
                     fgColor: { argb:'0AD3F0'}
                 };
             });
-            // worksheet.getCell('A8').value = "10:00 am to 12:00pm \n Bharadwaj Parthasarathy bradthegame@gmail.com";
-            // worksheet.getCell('B10').value = "10:00 am to 12:00pm \n Bharadwaj Parthasarathy \n bradthegame@gmail.com";
             // save workbook to disk
             worksheet.getRow(1).font = {bold:true};
-            console.log("Done");
-            //console.log(worksheet.getCell('A10').value);
             await workbook.xlsx.writeFile('samplefile.xlsx').then(function() {
                 console.log("saved");
             });
-
-            //fs.writeFileSync('./temp',schedule);
-
             res.download('./samplefile.xlsx','samplefile.xlsx');
-            //res.send(resformat.res_format(false,'OK',req.params.courseid));
         }
         catch (e){
             res.status(500).send(resformat.res_format(true,'Error in download schedule',e.stack));

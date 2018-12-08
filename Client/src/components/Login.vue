@@ -170,10 +170,7 @@ export default {
     signUp: function(){
       var self = this;
       var validate = this.validateSignUp();
-      console.log(validate);
       if(!validate.error){ //validation
-        //sign up axios call
-
         axios.post(this.$store.state.url+'signup',{
           user_name:self.signUpDetails.name
         },{
@@ -182,11 +179,8 @@ export default {
             password:self.signUpDetails.password
           }
         }).then(function(response){
-            console.log(response);
              if(!response.data.error){
-               console.log('auth passed');
                self.$session.start();
-               //self.fetchUsers();
                self.$session.set("id",response.data.result.user_id);
                self.$session.set("userDetails",response.data.result);
                self.$router.push('/courses');
@@ -198,7 +192,6 @@ export default {
          }).catch(function(error){
           console.log("error : "+error);
          });
-        console.log(this.signUpDetails);
       } else{
           this[validate.data] = true;
           setTimeout(function(){
@@ -219,8 +212,6 @@ export default {
             }).catch(function(error){
                 console.log("error : " +error);
             });
-        
-            //send request to backend
         }else{
             this[validate.data] = true;
             setTimeout(function(){
@@ -238,21 +229,16 @@ export default {
                 password:self.password
             }
             }).then(function(response){
-                console.log(response);
             if(!response.data.error){
-                console.log("success");
                 self.$session.start();
-                //self.fetchUsers();
                 self.$session.set("id",response.data.result.user_id);
                 self.$session.set("userDetails",response.data.result);
                 self.$router.push('/courses');
             }else{
-                console.log("error");
                 self.displayNotification("Invalid username or password", false);
             }
             }).catch(function(error){
-                console.log("preflight error");
-            console.log("error : "+error);
+                console.log("error : "+error);
             });
         }else{
             this[validate.data] = true;

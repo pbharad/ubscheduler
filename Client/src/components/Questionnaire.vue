@@ -229,7 +229,6 @@ export default {
     this.email = base64.decode(this.$route.params.email);
     var self = this;
     axios.get(`${this.$store.state.url}ta/course/${this.$route.params.courseid}`).then(function(response){
-      console.log(response);
       var result = response.data.result;
       self.courseName = result['course_name'];
       self.courseNumber = result['course_number'];
@@ -251,7 +250,6 @@ export default {
         'reason':''
       };
       this.hardSlots.push(obj);
-      console.log(this.hardSlots);
     },
     addSoftTime(){
       var obj = {
@@ -331,9 +329,7 @@ export default {
         sendObj['hard'] = hardSlotsList;
         sendObj['soft'] = softSlotsList;
         sendObj['max_hours'] = this.maxHours;
-        console.log(sendObj);
         axios.post(`${this.$store.state.url}ta/${this.$route.params.email}/course/${this.courseid}`,{"availability":sendObj}).then(function(response){
-          console.log(response);
           self.isAck = true;
         }).catch(function(error){
           console.log("error"+error);

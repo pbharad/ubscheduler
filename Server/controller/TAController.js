@@ -8,12 +8,6 @@ let resformat = require('../helper/response_format');
 module.exports = {
     async setTaAvailability(req,res){
         try{
-            console.log("testing db escape");
-            /*
-            let sql = `Update rules_details set availability = '${replaceall('\'','\\\'',JSON.stringify(req.body.availability))}' where
-                        course_id = ${req.params.courseid} and ta_email = '${base64.decode(req.params.taemail)}'`;
-             */
-
             let sql = `Update rules_details set availability = ? where 
                         course_id = ${req.params.courseid} and ta_email = '${base64.decode(req.params.taemail)}'`;
 

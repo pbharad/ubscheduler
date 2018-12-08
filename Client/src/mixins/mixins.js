@@ -1,7 +1,6 @@
 export const globalMixin =  {
     methods:{
         displayNotification : function(msg, type){
-          console.log('here');
           var self = this;
           this.$store.state.notification.notificationMsg = msg;
           this.$store.state.notification.success = type;

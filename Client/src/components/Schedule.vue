@@ -85,7 +85,6 @@
             </div>
             <div class="column is-full"> 
               <section class="accordions">
-                <!--<article :class="[showViolations?'is-active':'','accordion']">-->
                 <article class="accordion">
                   <div class="accordion-header" style="cursor:pointer;">
                     <span class="" @click="collapseViolations()" style="width:95%;">
@@ -171,12 +170,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="column is-2">
-                <label class="label">TA Name : </label>
-              </div>
-              <div class="column is-3">
-                <label class="label">{{displayObj.details.ta_name}}</label>
-              </div> -->
             </div>
           </div>
 
@@ -202,18 +195,11 @@
                 <p>
                   {{errorObj.reason}}
                 </p>
-              <!-- <div class="column is-2">
-                <label class="label">TA Name : </label>
-              </div>
-              <div class="column is-3">
-                <label class="label">{{displayObj.details.ta_name}}</label>
-              </div> -->
             </div>
           </div>
           </div>
           <a slot="footer" class="button is-primary" @click="override(errorObj)">Override</a>
           <a slot="footer" class="button is-primary" @click="cancelOverride(errorObj)">Cancel</a>
-          <!-- <a slot="footer" class="button is-primary" v-if="errorObj.type === 'hard'" @click="cancelOverride(errorObj.eventId)">ok</a> -->
       </modal>
     </div>
   </div>
@@ -312,8 +298,6 @@
         var events = $('#calendar').fullCalendar('clientEvents');
           events.forEach(function(event){
           if(event.rendering === 'background' && event.key !== undefined && event.key !== null){
-            console.log("Data");
-            console.log(event._id);
             if(event.key === data.key){
               if(data.toggle === null || data.toggle === undefined || data.toggle === false){
                data["toggle"] = true;
@@ -384,7 +368,6 @@
       },
       /* This method is called to check if it overlaps with any other existing constraints or events */
       validateEvent(event){
-        console.log("Validate");
         var ta_email = event.data.ta_email;
         var ta_name = event.data.ta_name;
         var ta_type = event.data.ta_type;
@@ -439,12 +422,8 @@
           }
         });
         }
-        console.log("final list : ");
-        console.log(overlapList);
         if (overlapList.length){
             var data = overlap[0];
-            console.log("overlap");
-            console.log(data);
             self.errorObj["start"] = event.start;
             self.errorObj["end"] = event.end;
             self.errorObj["details"] = event.data;
@@ -473,10 +452,7 @@
       },
       /* This method is called when the user clicks on the cancel button in the violation dialogue box */
       cancelOverride(details){
-        console.log("cancel Override");
-        console.log(details);
         var eventId = details.eventId;
-        console.log(eventId);
         $('#calendar').fullCalendar('removeEvents', eventId);
         if(this.internalEvent !== null){
           var arr = [];
@@ -492,29 +468,15 @@
       /* This method is triggered when the user moves an internal event from one slot to another */
       handleInternalDrop(event){
         this.addConstraints(this.taAvailability[event.data.ta_email]);
-        //this.addConstraints(event.data.availability);
         this.removeCurrentEventViolation(this.internalEvent);
-        console.log("Drop from inside");
-        console.log(event);
         this.validateEvent(event);
-        
-        //this.refreshEvents();
         this.removeConstrainst();
       },
       /* This method is triggered when the user resizes an internal event */
       handleResize(event){
-        console.log("Resize event");
-        console.log(event);
         this.addConstraints(this.taAvailability[event.data.ta_email]);
-        //this.addConstraints(event.data.availability);
-        //this.removeCurrentEventViolation(this.internalEvent);
-        console.log("Drop from inside");
-        console.log(event);
         this.validateEvent(event);
-        
         this.removeConstrainst();
-        // this.validateEvent(event);
-        // this.refreshEvents();
       },
       /* This method is triggered when all the events are rendered in the calendar */
       eventAfterAllRender(event, element){
@@ -522,8 +484,6 @@
       },
       /* This method is triggered when the user clicks on an existing event in the calendar */
       eventClick: function(event, jsEvent, view){
-        console.log('event details');
-        console.log(event);
         this.displayObj["day"] = event.start.format('dddd');
         this.displayObj["start"] = event.start.format('LT');
         this.displayObj["end"] = event.end.format('LT');
@@ -535,7 +495,6 @@
       },
       /* This method is triggered when the user clicks on delete button in the class schedule popup */
       deleteEvent:function(event){
-        console.log(event);
         var self = this;
         if (confirm('Delete "' + event.title + '"?'))
           {
@@ -552,7 +511,6 @@
         this.showModal = false;
       },
       refreshEvents() { //client events to get all events in the current window
-         //= jQuery('#calendar').fullCalendar('clientEvents');
         this.eventsData = $('#calendar').fullCalendar('clientEvents', function(ev) {
             if( ev.rendering === 'background') {
                 return false;
@@ -595,14 +553,12 @@
         axios.get(this.$store.state.url+'course/schedule/download/'+this.courseId,{
           responseType:'blob'
         }).then(function(response){
-          //self.displayNotification("Schedule Updated Successfully");
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
           link.setAttribute('download', 'Schedule.xlsx'); //or any other extension
           document.body.appendChild(link);
           link.click();
-          console.log('file downloaded');
         }).catch(function(error){
           console.log("error"+error);
         });
@@ -640,21 +596,11 @@
               start: function( event, ui ) {
                 self.showConstraintsLegend = true;
                 self.currentTADragged = ui.helper.data('event').data.ta_email;
-                //self.addConstraints(ui.helper.data('details').availability);
                 self.addConstraints(self.taAvailability[ui.helper.data('event').data.ta_email]);
               },
               stop:function(event, ui){
                 self.showConstraintsLegend = false;
-                console.log('event drag stopped');
-                //console.log(stop);
-                //self.events.push(self.eventObj);
-
                 self.removeConstrainst();
-                //self.refreshEvents();
-                //console.log('aditya');
-                //console.log(self.eventsData);
-                //console.log(self.events);
-                //$('#calendar').fullCalendar('addEventSource', self.eventsData);
               }
             });
          });
@@ -668,61 +614,37 @@
         this.showErrorModal = false;
       },
       addConstraints: function(availability){
-        console.log("step 1");
         if(availability != null){
           var self = this;
-        var dummy = [];
-        self.dummyEvents = [];
-            if(availability.hard != null){
-              var hardAvailable = availability.hard;
-              hardAvailable.forEach(function(details){
-                var obj = JSON.parse(JSON.stringify(details));
-                // obj["start"] = details.start;
-                // obj["end"] = details.end;
-                //obj["overlap"] = false;
-                obj["rendering"] = 'background';
-                obj["color"] =  '#ff9f89';
-                obj["type"] =  'hard';
-                //self.events.push(obj);
-                dummy.push(obj);
-              });
-            }
-            if(availability.soft != null){
-              var softAvailable = availability.soft;
-              softAvailable.forEach(function(details){
-                var obj = JSON.parse(JSON.stringify(details));
-                // obj["start"] = details.start;
-                // obj["end"] = details.end;
-                //obj["overlap"] = false;
-                obj["rendering"] = 'background';
-                obj["type"] =  'soft';
-                obj["color"] =  '#FFFF00';
-                //self.events.push(obj);
-                dummy.push(obj);
-              });
-            }
-        self.dummyEvents.push(...JSON.parse(JSON.stringify(dummy)));
-        console.log('append events');
-          console.log(self.dummyEvents);
-          $('#calendar').fullCalendar('addEventSource', self.dummyEvents);
-        console.log(self.events);
-        }
+          var dummy = [];
+          self.dummyEvents = [];
+              if(availability.hard != null){
+                var hardAvailable = availability.hard;
+                hardAvailable.forEach(function(details){
+                  var obj = JSON.parse(JSON.stringify(details));
+                  obj["rendering"] = 'background';
+                  obj["color"] =  '#ff9f89';
+                  obj["type"] =  'hard';
+                  dummy.push(obj);
+                });
+              }
+              if(availability.soft != null){
+                var softAvailable = availability.soft;
+                softAvailable.forEach(function(details){
+                  var obj = JSON.parse(JSON.stringify(details));
+                  obj["rendering"] = 'background';
+                  obj["type"] =  'soft';
+                  obj["color"] =  '#FFFF00';
+                  dummy.push(obj);
+                });
+              }
+              self.dummyEvents.push(...JSON.parse(JSON.stringify(dummy)));
+              $('#calendar').fullCalendar('addEventSource', self.dummyEvents);
+          }
       },
       removeConstrainst: function(){
         var self = this;
-        console.log(this.events);
-        //var result = this.events.filter(event => (event.type==undefined || event.type==null));
-        console.log("step 3");
         $('#calendar').fullCalendar('removeEventSource', self.dummyEvents);
-
-        //console.log(result);
-        //this.events = JSON.parse(JSON.stringify(result));
-        // this.events.forEach(function(data, index){
-        //   console.log(data.type);
-        //   if(data.type === 'hard' || data.type === 'soft'){
-        //     self.events.splice(index,1);
-        //   }
-        // });
       },
       isObjOnObj:function(a,b){
         var rect1 = a.getBoundingClientRect();
@@ -749,16 +671,14 @@
         
         return collisionsSoFar;
       },
+      /* Method to find overlapping course slots - split and display it */
       fixRecurringEventCollision : function() {
         var self = this;
         let timeLine = $('#calendar').fullCalendar('getView').name.indexOf('timeline') !== -1;
         jQuery('.fc-bgevent-container').each(function(){
             var $elements = jQuery(this).find('.fc-bgevent');
-            console.log("Elements : " +$elements.length);
             for (let i=0; i<$elements.length; i++) {
-              console.log('bg elements');
                 let collissions = self.checkCollisionWithNext($elements, 0, i);
-                console.log(collissions);
                 for (let j=0; j<collissions; j++) {
 
                     if (timeLine) { 
@@ -781,12 +701,9 @@
         return moment(time).format('LT');
       },
       isCourseSlotAvailable:function(){
-        console.log("slot availability");
         var isAvailable = false;
         var keys = Object.keys(this.courseRules);
         for(var i=0;i<keys.length;i++){
-          console.log(keys[i]);
-          console.log(this.courseRules[keys[i]].length);
           if(this.courseRules[keys[i]].length > 0){
             isAvailable = true;
             break;
@@ -813,9 +730,7 @@
             scheduleObj["start"] = data.start;
             scheduleObj["end"] = data.end;
             scheduleObj["title"]= data.details.ta_name;
-            scheduleObj["data"]= data.details;// use the element's text as the event title
-            // scheduleObj["borderColor"] = "#00FFFF";
-            // scheduleObj["eventColor"] = "transparent";
+            scheduleObj["data"]= data.details;
             dummy.push(scheduleObj);
           });
           var taList = response.data.result.ta_details;
@@ -823,10 +738,6 @@
             var taEmail = data.ta_email;
             var taAva = data.availability;
             self.taAvailability[taEmail] = taAva;
-            // var taObj = {};
-            // taObj["ta_email"] = data.ta_email;
-            // taObj["ta_name"] = data.ta_name;
-            // self.taDetails.push(taObj);
           });
           self.taDetails = JSON.parse(JSON.stringify(taList));
           //Course rules
@@ -839,8 +750,6 @@
             eventObj["courseSlot"] = true; 
             eventObj["backgroundColor"] = "rgb(6, 188, 243)";
             eventObj["key"] = index;
-            //eventObj["borderColor"] = rule.color;
-            //eventObj["className"] = ['slotEvent'];
             eventObj["sec_id"] = rule.sec_id;
             dummy.push(eventObj);
             var start = rule.start;
@@ -860,17 +769,9 @@
               return (moment(obj2.start).isAfter(moment(obj1.start)))?1:-1;
             });
           }
-          console.log("background");
-          console.log(self.slotEvents);          
-          console.log("done");
           //Violations
           self.violationList = response.data.result.violations === null?[]:response.data.result.violations;
           self.setDraggable();
-          // //self.fixRecurringEventCollision();
-          // setTimeout(function(){
-          //    self.fixRecurringEventCollision();
-          // }, 1000)
-         
         }
 
       }).catch(function(error){
@@ -880,15 +781,9 @@
 
       // get course details
       axios.get(this.$store.state.url+'course/'+courseId).then(function(res){
-
         var details = res.data.result;
         self.courseData = details.courseDetails;
-        //self.slots = self.courseDetails.course_rules;
         self.instructorData = details.instructorDetails;
-        console.log('course data');
-        console.log(self.courseData);
-        console.log('ins data');
-        console.log(self.instructorData);
       }).catch(function(error){
         console.log("error : "+error);
       });

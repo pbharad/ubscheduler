@@ -8,15 +8,10 @@ let router = express.Router();
 
 let db = require('../config/config');
 let resformat = require('../helper/response_format');
-/*
- user 1: pwd111
-user 2: johnson1
-cooper@gmail.com user 3: ccooper123
- */
+
 router.post('/', (req, res, next) => {
     try{
         let userObject = auth(req);
-        //console.log(userObject);
         let sql = `select user_id,user_name,email,password from user_details where email = '${userObject.name}'`;
         let query = db.query(sql, (err,results) => {
             if(err) throw err;
@@ -26,7 +21,6 @@ router.post('/', (req, res, next) => {
                 let passwordHash = results[0].password;
                 let isEqual = bcrypt.compareSync(password, passwordHash);
                     if (isEqual === true) {
-                        console.log("password match");
                         let responseObject = {};
                         responseObject['user_id'] = results[0].user_id;
                         responseObject['user_name'] = results[0].user_name;

@@ -52,16 +52,12 @@ const router = new VueRouter({routes});
 router.beforeEach((to, from, next) => {
   var session = router.app.$session;
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log("Auth required");
     if(session.has('id')){
-      console.log("Auth success - directing");
       next();
     }else{
-      console.log("Auth failed - Redirecting to home");
       next('/');
     }
   }else{
-    console.log("No auth");
     next();
   }
 });
@@ -71,8 +67,7 @@ router.beforeEach((to, from, next) => {
 const store = new Vuex.Store({
   state: {
     isLoggedIn: true,
-    //url:'http://schedulingframeworkapi.us-east-2.elasticbeanstalk.com/',
-    url:environmentVar.APP_SERVER_URL+'api/',
+    url:environmentVar.APP_SERVER_URL+'/api/',
     notification:{
       showNotification:false,
       notificationMsg : "",

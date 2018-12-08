@@ -37,7 +37,7 @@ export default {
   name: 'TopBand',
   data () {
     return {
-      msg: 'Scheduling Framework'
+      msg: 'UB Scheduler'
     }
   },
   methods:{

@@ -109,7 +109,6 @@ export default {
                         password: this.newPassword
                     }
                 }).then(function(response){
-                    console.log(response);
                     if(!response.data.error){
                         self.successMsg = "Password has been updated successfully. Please login with the new credentials."
                     }

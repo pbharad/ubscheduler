@@ -157,7 +157,8 @@
                 <br>
                 <label class="label"> Note : </label>
                 <p class="label">
-                  Do not change the Headers Name, Email and Type.
+                  Do not change the Headers Name, Email and Type. <br>
+                  The imported TAs will be appended to the existing list of TAs.
                 </p>
             </div>
           </div>
@@ -188,29 +189,7 @@ export default{
   components:{modal},
   data(){
     return{
-      taDetails:[
-        {
-          "ta_name":"TA1",
-          "ta_email":"",
-          "rules":{},
-          "ta_type":"UTA",
-          "isActive":true
-        },
-        {
-          "ta_name":"TA2",
-          "ta_email":"",
-          "rules":{},
-          "ta_type":"GTA",
-          "isActive":false,
-        },
-        {
-          "ta_name":"TA3",
-          "ta_email":"",
-          "rules":{},
-          "ta_type":"GTA",
-          "isActive":false,
-        }
-      ],
+      taDetails:[],
       courseDetails:{
         course_id:-1,
         course_name:'',
@@ -318,7 +297,6 @@ export default{
       this.action = 'edit';
       this.courseID = courseId;
       axios.get(this.$store.state.url+"course/"+courseId).then(function(response){
-          console.log(response);
           var details = response.data.result;
           self.courseDetails = details.courseDetails;
           self.slots = self.courseDetails.course_rules;
@@ -331,7 +309,6 @@ export default{
           self.viewSchedule = true;
       });
     }else{
-      console.log(self.$session.get('userDetails'));
       self.instructorDetails.push(self.$session.get('userDetails'));
     }
   },
@@ -345,13 +322,10 @@ export default{
       data.isActive = !data.isActive;
     },
     deleteTA:function(index){
-      console.log(this.taDetails);
       var taObj = (this.taDetails.splice(index, 1))[0];
       if(this.action === 'edit'){
-        console.log(taObj);
         if(!taObj.added){
           this.taDeletedList.push(taObj);
-          console.log(this.taDeletedList);
         }
       }
     },
@@ -382,29 +356,25 @@ export default{
       var reader = new FileReader();
       reader.readAsText(file[0]);
       reader.onload = function(event) {
-          console.log(event.target.result);
           var csv = event.target.result;
           var lines = csv.split("\n");
           var result = [];
           var headers=lines[0].split(",");
-          console.log(lines.length);
           for(var i=1;i<lines.length;i++){
             var obj = {};
             var currentline=lines[i].split(",");
             if(currentline.length === 3) {
-              console.log(currentline);
               obj["ta_name"] = currentline[0].trim();
               obj["ta_email"] = currentline[1].trim();
               obj["ta_type"] = currentline[2].trim();
               obj["rules"] = {}
               obj["isActive"] = false;
-              console.log(obj);
-              result.push(obj);
+              //result.push(obj);
+              self.taDetails.push(obj);
             }
           }
-          self.taDetails = JSON.parse(JSON.stringify(result));
+          //self.taDetails = JSON.parse(JSON.stringify(result));
           self.showImportModal = false;
-          console.log(self.taDetails);
       };
       reader.onerror = function() {
           alert('Unable to read ' + file.fileName);
@@ -435,7 +405,6 @@ export default{
       var self = this;
       axios.get(this.$store.state.url+'user').then(function(response){
         self.options = response.data.result;
-        console.log(self.options);
       }).catch(function(error){
         console.log("error : "+error);
       });
@@ -586,16 +555,13 @@ export default{
           obj["end"] = slot.date+"T"+slot.end+":00";
           obj["color"] = self.sectionColors[slot.sec_id];
           slotObj.push(obj);
-        });
-        console.log(slotObj);
+        }); 
         this.courseDetails.course_rules = slotObj;
         finalObj["courseDetails"] = this.courseDetails;
         axios.post(self.$store.state.url+'course',finalObj).then(function(response){
           if(!response.data.error){
             self.viewSchedule = true;
             self.courseID = response.data.result.course_id;
-            console.log("brad");
-            console.log(self.courseID);
             if(self.action === 'add'){
               self.displayNotification("Course added successfully. Email has been sent to the TAs added", true);
             }else{
